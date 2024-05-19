@@ -11,11 +11,11 @@ const JobDetails = () => {
   const [startDate, setStartDate] = useState(new Date());
 
   const jobData = useLoaderData();
-  const { _id, job_title, description, deadline, category, min_price, max_price, buyer_email } = jobData;
+  const { _id, job_title, description, deadline, category, min_price, max_price, buyer } = jobData;
 
   const handleFormSubmit = async (e) => {
-    if (buyer_email === user?.email) return toast.error("Buyer cannot bid in his own posted job");
     e.preventDefault();
+    if (buyer?.email === user?.email) return toast.error("Buyer cannot bid in his own posted job");
     const form = e.target;
     const jobId = _id;
     const price = parseInt(form.price.value);
@@ -25,7 +25,7 @@ const JobDetails = () => {
     const email = user?.email;
     const status = "Pending";
 
-    const bidData = { jobId, job_title, price, category, deadline, comment, buyer_email, email, status };
+    const bidData = { jobId, job_title, price, category, deadline, comment, buyer_email: buyer.email, email, status };
 
     try {
       // eslint-disable-next-line no-unused-vars
@@ -41,7 +41,7 @@ const JobDetails = () => {
       {/* Job Details */}
       <div className="flex-1  px-4 py-7 bg-white rounded-md shadow-md md:min-h-[350px]">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-light text-gray-800 ">Deadline: {deadline}</span>
+          <span className="text-sm font-light text-gray-800 ">Deadline: {new Date(deadline).toLocaleDateString()}</span>
           <span className="px-4 py-1 text-xs text-blue-800 uppercase bg-blue-200 rounded-full ">{category}</span>
         </div>
 
@@ -50,13 +50,13 @@ const JobDetails = () => {
 
           <p className="mt-2 text-lg text-gray-600 ">{description}</p>
           <p className="mt-6 text-sm font-bold text-gray-600 ">Buyer Details:</p>
-          <div className="flex items-center gap-5">
+          <div className="flex items-center  gap-10">
             <div>
-              <p className="mt-2 text-sm  text-gray-600 ">Name: Jhankar Vai.</p>
-              <p className="mt-2 text-sm  text-gray-600 ">Email: {buyer_email}</p>
+              <p className="mt-2 text-sm  text-gray-600 ">Name: {buyer.name}</p>
+              <p className="mt-2 text-sm  text-gray-600 ">Email: {buyer.email}</p>
             </div>
             <div className="rounded-full object-cover overflow-hidden w-14 h-14">
-              <img src="" alt="" />
+              <img src={buyer.photo} alt="" />
             </div>
           </div>
           <p className="mt-6 text-lg font-bold text-gray-600 ">
