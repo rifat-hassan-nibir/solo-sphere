@@ -6,7 +6,7 @@ import { AuthContext } from "../../provider/AuthProvider";
 import toast from "react-hot-toast";
 
 const Login = () => {
-  const { signIn, signInWithGoogle } = useContext(AuthContext);
+  const { user, signIn, signInWithGoogle } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
   const from = location?.state || "/";
@@ -37,6 +37,9 @@ const Login = () => {
       toast.error(error.message);
     }
   };
+
+  // Prevent user's from accesing the login page when user in logged in
+  if (user) return navigate("/");
 
   return (
     <div className="flex justify-center items-center min-h-[calc(100vh-306px)] my-12">
