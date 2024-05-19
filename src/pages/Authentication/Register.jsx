@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import img from "../../assets/register.jpg";
-import logo from "../../assets/logo.png";
+import logo from "/logo.png";
 import { useContext } from "react";
 import { AuthContext } from "../../provider/AuthProvider";
 import toast from "react-hot-toast";
