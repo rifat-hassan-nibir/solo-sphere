@@ -108,7 +108,7 @@ const BidRequests = () => {
                           ${bid.status === "Pending" && "bg-yellow-100/60 text-yellow-500"} 
                           ${bid.status === "In Progress" && "bg-blue-100/60 text-blue-500"}
                           ${bid.status === "Rejected" && "bg-red-100/60 text-red-500"} 
-                          ${bid.status === "Completed" && "bg-green-100/60 text-green-500"}
+                          ${bid.status === "Complete" && "bg-green-100/60 text-green-500"}
                           `}
                         >
                           <span

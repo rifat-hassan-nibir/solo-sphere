@@ -21,7 +21,17 @@ const MyBids = () => {
     }
   };
 
-  console.log(bids);
+  //   Change Status
+  const handleStatus = async (id, previousStatus, status) => {
+    console.log(id, previousStatus, status);
+    try {
+      const { data } = await axios.patch(`${import.meta.env.VITE_API_URL}/bid/${id}`, { status: "Complete" });
+      toast.success("Job Complete");
+    } catch (error) {
+      toast.error(error.message);
+    }
+    getMyBids();
+  };
 
   return (
     <section className="container px-4 mx-auto pt-12">
@@ -91,15 +101,22 @@ const MyBids = () => {
                             bid.status === "Pending" && "bg-yellow-100/60 text-yellow-500"
                           } 
                           ${bid.status === "In Progress" && "bg-blue-100/60 text-blue-500"}
-                          ${bid.status === "Completed" && "bg-green-100/60 text-green-500"}
+                          ${bid.status === "Complete" && "bg-green-100/60 text-green-500"}
                           `}
                         >
-                          <span className="h-1.5 w-1.5 rounded-full bg-yellow-500"></span>
+                          <span
+                            className={`h-1.5 w-1.5 rounded-full 
+                            ${bid.status === "Pending" && "bg-yellow-400 text-yellow-500"} 
+                            ${bid.status === "In Progress" && "bg-blue-400 text-blue-500"}
+                            ${bid.status === "Rejected" && "bg-red-400 text-red-500"}
+                            ${bid.status === "Complete" && "bg-green-400 text-green-500"}`}
+                          ></span>
                           <h2 className="text-sm font-normal">{bid.status}</h2>
                         </div>
                       </td>
                       <td className="px-4 py-4 text-sm whitespace-nowrap">
                         <button
+                          onClick={() => handleStatus(bid._id)}
                           disabled={bid.status !== "In Progress"}
                           title="Mark Complete"
                           className="text-gray-500 transition-colors duration-200   hover:text-red-500 focus:outline-none disabled:cursor-not-allowed"
