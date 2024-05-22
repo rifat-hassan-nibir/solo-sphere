@@ -4,6 +4,7 @@ import logo from "/logo.png";
 import { useContext } from "react";
 import { AuthContext } from "../../provider/AuthProvider";
 import toast from "react-hot-toast";
+import axios from "axios";
 
 const Login = () => {
   const { user, signIn, signInWithGoogle } = useContext(AuthContext);
@@ -14,7 +15,9 @@ const Login = () => {
   //   Google Logins
   const handleGoogleLogin = async () => {
     try {
-      await signInWithGoogle();
+      const result = await signInWithGoogle();
+      const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/jwt`, { email: result?.user?.email }, { withCredentials: true });
+      console.log(data);
       toast.success("Google Login Successful");
       navigate(from, { replace: true });
     } catch (error) {
