@@ -17,7 +17,6 @@ const Login = () => {
     try {
       const result = await signInWithGoogle();
       const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/jwt`, { email: result?.user?.email }, { withCredentials: true });
-      console.log(data);
       toast.success("Google Login Successful");
       navigate(from, { replace: true });
     } catch (error) {
@@ -33,7 +32,7 @@ const Login = () => {
     const password = form.password.value;
     try {
       const result = await signIn(email, password);
-      console.log(result);
+      const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/jwt`, { email: result?.user?.email }, { withCredentials: true });
       navigate(from, { replace: true });
       toast.success("Google Login Successful");
     } catch (error) {
