@@ -1,19 +1,25 @@
-import { useEffect, useState } from "react";
 import Carousel from "../components/Carousel";
 import TabCategories from "../components/TabCategories";
 import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const Home = () => {
-  const [jobs, setJobs] = useState([]);
+  const {
+    data: jobs = [],
+    isPending,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["jobs"],
+    queryFn: async () => {
+      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/jobs`);
+      return data;
+    },
+  });
 
-  useEffect(() => {
-    getData();
-  }, []);
-
-  const getData = async () => {
-    const { data } = await axios(`${import.meta.env.VITE_API_URL}/jobs`);
-    setJobs(data);
-  };
+  if (isPending) return <LoadingSpinner />;
+  if (isError) return <p>{error.message}</p>;
 
   return (
     <div>
