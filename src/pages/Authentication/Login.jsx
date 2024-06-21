@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import img from "../../assets/login.jpg";
+import bgImg from "../../assets/login.jpg";
 import logo from "/logo.png";
 import { useContext } from "react";
 import { AuthContext } from "../../provider/AuthProvider";
@@ -49,7 +49,7 @@ const Login = () => {
         <div
           className="hidden bg-cover bg-center lg:block lg:w-1/2"
           style={{
-            backgroundImage: `url(${img})`,
+            backgroundImage: `url(${bgImg})`,
           }}
         ></div>
 

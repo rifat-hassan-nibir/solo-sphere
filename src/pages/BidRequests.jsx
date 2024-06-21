@@ -14,7 +14,7 @@ const BidRequests = () => {
 
   const getMyBids = async () => {
     try {
-      const { data } = await axios(`${import.meta.env.VITE_API_URL}/bid-requests/${user.email}`);
+      const { data } = await axios(`${import.meta.env.VITE_API_URL}/bid-requests/${user?.email}`, { withCredentials: true });
       setBids(data);
     } catch (error) {
       toast.error(error.message);
@@ -84,12 +84,12 @@ const BidRequests = () => {
                 <tbody className="bg-white divide-y divide-gray-200 ">
                   {bids.map((bid) => (
                     <tr key={bid._id}>
-                      <td className="px-4 py-4 text-sm text-gray-500  whitespace-nowrap">{bid.job_title}</td>
-                      <td className="px-4 py-4 text-sm text-gray-500  whitespace-nowrap">{bid.email}</td>
+                      <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">{bid.job_title}</td>
+                      <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">{bid.email}</td>
 
-                      <td className="px-4 py-4 text-sm text-gray-500  whitespace-nowrap">{new Date(bid.deadline).toDateString()}</td>
+                      <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">{new Date(bid.deadline).toDateString()}</td>
 
-                      <td className="px-4 py-4 text-sm text-gray-500  whitespace-nowrap">${bid.price}</td>
+                      <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">${bid.price}</td>
                       <td className="px-4 py-4 text-sm whitespace-nowrap">
                         <div className="flex items-center gap-x-2">
                           <p
@@ -127,7 +127,7 @@ const BidRequests = () => {
                           <button
                             onClick={() => handleStatus(bid._id, bid.status, "In Progress")}
                             disabled={bid.status === "Complete"}
-                            className="text-gray-500 transition-colors duration-200 hover:text-red-500 focus:outline-none"
+                            className="text-gray-500 disabled:cursor-not-allowed transition-colors duration-200 hover:text-red-500 focus:outline-none"
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -145,7 +145,7 @@ const BidRequests = () => {
                           <button
                             onClick={() => handleStatus(bid._id, bid.status, "Rejected")}
                             disabled={bid.status === "Complete"}
-                            className="text-gray-500 transition-colors duration-200 hover:text-yellow-500 focus:outline-none"
+                            className="text-gray-500 disabled:cursor-not-allowed transition-colors duration-200 hover:text-yellow-500 focus:outline-none"
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
