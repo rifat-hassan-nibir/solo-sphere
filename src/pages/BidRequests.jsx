@@ -1,47 +1,62 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import useAxiosSecure from "../hooks/useAxiosSecure";
 import useAuth from "../hooks/useAuth";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const BidRequests = () => {
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
-  const [bids, setBids] = useState([]);
 
-  useEffect(() => {
-    getMyBids();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  const {
+    data: bidRequests = [],
+    isPending,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["bid-requests", user?.email],
+    queryFn: async () => {
+      try {
+        const { data } = await axiosSecure(`/bid-requests/${user?.email}`);
+        return data;
+      } catch (error) {
+        toast.error(error.message);
+      }
+    },
+  });
 
-  const getMyBids = async () => {
-    try {
-      const { data } = await axiosSecure(`/bid-requests/${user?.email}`);
-      setBids(data);
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
+  const { mutateAsync } = useMutation({
+    mutationFn: async ({ id, status }) => {
+      const { data } = await axios.patch(`${import.meta.env.VITE_API_URL}/bid/${id}`, { status });
+    },
+    onSuccess: () => {
+      toast.success("Status Changed");
+      refetch();
+    },
+  });
 
   //   Change Status
   const handleStatus = async (id, previousStatus, status) => {
-    console.log(id, previousStatus, status);
     try {
-      const { data } = await axios.patch(`${import.meta.env.VITE_API_URL}/bid/${id}`, { status });
       if (previousStatus === status) return toast.error("Action Not Permitted");
-      toast.success("Status Changed");
+      await mutateAsync({ id, status });
+      console.log(id, status);
     } catch (error) {
       toast.error(error.message);
     }
-    getMyBids();
   };
+
+  if (isPending) return <LoadingSpinner />;
+  if (isError) return <p>{error.message}</p>;
 
   return (
     <section className="container px-4 mx-auto pt-12">
       <div className="flex items-center gap-x-3">
         <h2 className="text-lg font-medium text-gray-800 ">Bid Requests</h2>
 
-        <span className="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full ">{bids.length} Requests</span>
+        <span className="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full ">{bidRequests.length} Requests</span>
       </div>
 
       <div className="flex flex-col mt-6">
@@ -84,7 +99,7 @@ const BidRequests = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200 ">
-                  {bids.map((bid) => (
+                  {bidRequests.map((bid) => (
                     <tr key={bid._id}>
                       <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">{bid.job_title}</td>
                       <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">{bid.email}</td>

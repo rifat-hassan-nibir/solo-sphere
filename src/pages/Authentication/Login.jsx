@@ -4,10 +4,11 @@ import logo from "/logo.png";
 import { useContext } from "react";
 import { AuthContext } from "../../provider/AuthProvider";
 import toast from "react-hot-toast";
-import axios from "axios";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const Login = () => {
   const { user, signIn, signInWithGoogle } = useContext(AuthContext);
+  const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location?.state || "/";
@@ -16,7 +17,7 @@ const Login = () => {
   const handleGoogleLogin = async () => {
     try {
       const result = await signInWithGoogle();
-      const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/jwt`, { email: result?.user?.email }, { withCredentials: true });
+      const { data } = await axiosSecure.post(`/jwt`, { email: result?.user?.email });
       toast.success("Google Login Successful");
       navigate(from, { replace: true });
     } catch (error) {
@@ -32,7 +33,7 @@ const Login = () => {
     const password = form.password.value;
     try {
       const result = await signIn(email, password);
-      const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/jwt`, { email: result?.user?.email }, { withCredentials: true });
+      const { data } = await axiosSecure.post(`/jwt`, { email: result?.user?.email });
       navigate(from, { replace: true });
       toast.success("Google Login Successful");
     } catch (error) {
