@@ -29,6 +29,7 @@ const BidRequests = () => {
 
   const { mutateAsync } = useMutation({
     mutationFn: async ({ id, status }) => {
+      // eslint-disable-next-line no-unused-vars
       const { data } = await axios.patch(`${import.meta.env.VITE_API_URL}/bid/${id}`, { status });
     },
     onSuccess: () => {
