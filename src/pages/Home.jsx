@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import LoadingSpinner from "../components/LoadingSpinner";
 
 const Home = () => {
+  // fetch all jobs data
   const {
     data: jobs = [],
     isPending,
